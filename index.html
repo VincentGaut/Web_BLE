@@ -4,10 +4,12 @@
     <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<<script src="C:\Users\Vincent Gaultier\Documents\Web_BLE\Chart\Chart.js"></script>
     <title>Projet MAMAN2</title>
 	<script src="justgage-1.2.2\raphael-2.1.4.min.js"></script>
 	<script src="justgage-1.2.2\justgage.js"></script>
 	<link href="styles/styles.css" rel="stylesheet" type="text/css">
+	<link href="styles/trace.css" rel="stylesheet" type="text/css">
 	<script>
       // Add a global error event listener early on in the page load, to help ensure that browsers
       // which don't support specific functionality still end up displaying a meaningful message.
@@ -75,6 +77,13 @@
 
 	<script src="scripts\select.js"></script>
 
+	<h3>Live Messages</h3>
+	<div id="output" 
+		class="output" > 
+	  <div id="content"></div>
+	  <div id="status"></div>
+	  <pre id="log"></pre>
+	</div>
 
 	<script>
 	  log = ChromeSamples.log;
@@ -102,6 +111,12 @@
 		  ga('send', 'pageview');
 		  /* jshint ignore:end */
 		</script>
+		
+	<input class="favorite styled"
+			id ="Resultat"
+			type="button"
+			value="Export data">
+	<button id="tracer" class ="favorite styled">Tracer graph</button>
 	
 	<div id="boxes">
 		<h2> Mesures de Pressions </h2>
@@ -111,19 +126,16 @@
 
 	</div>
 
-	<input class="favorite styled"
-			type="button"
-			value="Résultats"
-			onclick="document.location.href='page/page_2.html'">
+
 			
 	<script src="scripts\main.js"></script>		
 	
 	
-	<h3>Live Output</h3>
-	<div id="output" class="output">
-	  <div id="content"></div>
-	  <div id="status"></div>
-	  <pre id="log"></pre>
+	
+	
+	
+	<div style="width: 75%">
+		<canvas id="myChart"></canvas>
 	</div>
    </body>
 </html> 
