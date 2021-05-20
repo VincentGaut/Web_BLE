@@ -167,7 +167,7 @@
 	}
 	function exportToCsv() {
 			var tab = datacsv.toString();
-            var header = "Capteur 1;Capteur 2;Accelerometre x;Accelerometre y;Accelerometre z\n";
+            var header = "vide,Capteur 1,Capteur 2,Accelerometre x,Accelerometre y,Accelerometre z\n";
 			var myCsv = header + tab;//"Capteur 1;Capteur 2;Accelerometre x;Accelerometre y;Accelerometre z\nval1;val2;val3;val4;val5";
 
             window.open('data:text/csv;charset=utf-8,' + escape(myCsv));
