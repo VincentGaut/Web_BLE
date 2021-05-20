@@ -183,7 +183,7 @@
 	var str = new Array();
 	function tracegraph() {
 		for (let i = 0; i <= datalist.length; i++) {
-			str.push(i);
+			str.push(0.1*i);
 		}
 		//var chaine = str.toString();
 		//var words = chaine.split(',');
