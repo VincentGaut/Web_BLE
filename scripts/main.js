@@ -244,7 +244,11 @@
 	var button = document.getElementById('tracer');
     button.addEventListener('click', tracegraph);
 	
-	
+	function tareClick(){
+		log('Tare done');
+		
+	}
 
-	
+	var button = document.getElementById('tare');
+	button.addEventListener('click', tareClick);
   
