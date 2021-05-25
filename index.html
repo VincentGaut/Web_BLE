@@ -4,12 +4,19 @@
     <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<<script src="C:\Users\Vincent Gaultier\Documents\Web_BLE\Chart\Chart.js"></script>
+	<script src="C:\Users\Vincent Gaultier\Documents\Web_BLE\Chart\Chart.js"></script>
     <title>Projet MAMAN2</title>
 	<script src="justgage-1.2.2\raphael-2.1.4.min.js"></script>
 	<script src="justgage-1.2.2\justgage.js"></script>
 	<link href="styles/styles.css" rel="stylesheet" type="text/css">
 	<link href="styles/trace.css" rel="stylesheet" type="text/css">
+	<link href="styles/rotate.css" rel="stylesheet" type="text/css">
+	<script src="C:\Users\Vincent Gaultier\Documents\Web_BLE\scripts\libs\three.js"></script>
+	<script src="C:\Users\Vincent Gaultier\Documents\Web_BLE\scripts\libs\OrbitControls.js"></script>
+	<script src="C:\Users\Vincent Gaultier\Documents\Web_BLE\scripts\libs\OBJLoader.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
+      integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
+      crossorigin="anonymous" defer></script>
 	<script>
       // Add a global error event listener early on in the page load, to help ensure that browsers
       // which don't support specific functionality still end up displaying a meaningful message.
@@ -21,6 +28,8 @@
         }
       });
     </script>
+
+  
   </head>
   <body>
 	
@@ -33,7 +42,7 @@
 	<button id="startNotifications" disabled>Start Notifications</button>
 	<button id="stopNotifications" disabled>Stop Notifications</button>
 	<button id="reset">Reset Bluetooth Device</button>
-
+	
 
 	<script>
 	  var ChromeSamples = {
@@ -111,7 +120,7 @@
 		  ga('create', 'UA-53563471-1', 'auto');
 		  ga('send', 'pageview');
 		  /* jshint ignore:end */
-		</script>
+	</script>
 		
 	<input class="favorite styled"
 			id ="Resultat"
@@ -128,17 +137,34 @@
 
 	</div>
 
+	<div class="controls">
+        <button id="butConnect" type="button">Connect</button>
+        <select id="baudRate"></select>
+        <span>
+          <select id="angle_type">
+            <option value="quaternion">Quaternions</option>
+            <option value="euler">Euler Angles</option>
+          </select>
+         </span>
+        <input type="checkbox" id="darkmode"> Dark Mode
+	</div>
+  
+  
+	<div id="webGLnotSupported" class="notSupported">
+        
+    </div>
+	<div class="animation-container">
+		<canvas id="canvas"></canvas>			
+	</div>
 
-			
-	<script src="scripts\main.js"></script>		
-	
-	
-	
-	
-	
+
+	<script src="scripts\main.js"></script>	
+		
+		
 	<div style="width: 75%">
 		<canvas id="myChart"></canvas>
 	</div>
+	
    </body>
 </html> 
 

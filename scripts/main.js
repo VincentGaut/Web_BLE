@@ -8,6 +8,16 @@
 	var datalist= new Array();
 	var datalist_2= new Array();
 	var datacsv= new Array();
+	var roll=0;
+	var pitch=0;
+	var flag=true;
+	let orientation = [0, 0, 0];
+	let quaternion = [1, 0, 0, 0];
+	let calibration = [0, 0, 0, 0];
+
+	const canvas = document.querySelector('#canvas');
+
+const angleType = document.getElementById('angle_type');
 	
 	var g = new JustGage({
 	id: "gauge",
@@ -27,15 +37,9 @@
 		title: "Pression capteur 2"
 		});
 		
-	//function update() {
-	//var capteur_1 = document.getElementById('pression_1').value
-	//g.refresh(capteur_1)
-				
-	//}
-
 	function update(j,cap) {
 		j.refresh(cap)
-		}
+	}
 		
 	function storedata(fich_1,fich_2,a,b) {
 		fich_1.push(a);
@@ -49,6 +53,8 @@
 		fich.push(e);
 		fich.push('\n');		
 	}
+
+    
 	
 	function onReadPressionLevelButtonClick() {
 	  return (bluetoothDevice ? Promise.resolve() : requestDevice())
@@ -60,6 +66,7 @@
 	  .catch(error => {
 		log('Argh! ' + error);
 	  });
+	  flag=false;
 	}
 
 	function requestDevice() {
@@ -106,9 +113,9 @@
 	function handlePressionLevelChanged(event) {
 	  pressionCapteur_1 = event.target.value.getUint16(0);
 	  pressionCapteur_2 = event.target.value.getUint16(2);
-	  accelero_x = event.target.value.getUint16(4);
-	  accelero_y = event.target.value.getUint16(6);
-	  accelero_z = event.target.value.getUint16(8);
+	  accelero_x = event.target.value.getInt16(4);
+	  accelero_y = event.target.value.getInt16(6);
+	  accelero_z = event.target.value.getInt16(8);
 	  //log('> Pression Capteur 1 = ' + pressionCapteur_1 + ' Pa');
 	  //log('> Pression Capteur 2 = ' + pressionCapteur_2 + ' Pa');
 	  //log('> Position x = ' + accelero_x + ' m.s-2');
@@ -119,6 +126,22 @@
 	  storedata(datalist,datalist_2,pressionCapteur_1,pressionCapteur_2);
 	  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,accelero_x,accelero_y,accelero_z);
 	  //log('> data = ' + datalist );
+		roll = Math.atan(accelero_y/Math.sqrt((accelero_x*accelero_x)+(accelero_z*accelero_z)))*180/Math.PI;//rotation X
+		pitch = Math.atan(-1*accelero_x/Math.sqrt((accelero_y*accelero_y)+(accelero_z*accelero_z)))*180/Math.PI;// rotation y
+		document.documentElement.style
+    .setProperty('--Rotate_x', roll);
+	document.documentElement.style
+    .setProperty('--Rotate_y', pitch);
+	//log('>Roll = ' + roll );
+	//log('> Pitch = ' + pitch );
+	//get property
+
+	getComputedStyle(document.documentElement)
+    .getPropertyValue('--Rotate_x'); // returns value
+	getComputedStyle(document.documentElement)
+    .getPropertyValue('--Rotate_y'); // returns value
+	//log('>Roll = ' + --Rotate_x );
+	//log('> Pitch = ' + --Rotate_y );
 	}
 
 	function onStartNotificationsButtonClick() {
@@ -129,6 +152,7 @@
 		document.querySelector('#startNotifications').disabled = true;
 		document.querySelector('#stopNotifications').disabled = false;
 	  })
+	  
 	  .catch(error => {
 		log('Argh! ' + error);
 	  });
@@ -145,6 +169,7 @@
 	  .catch(error => {
 		log('Argh! ' + error);
 	  });
+	  flag=true;
 	}
 
 	function onResetButtonClick() {
@@ -251,4 +276,151 @@
 
 	var button = document.getElementById('tare');
 	button.addEventListener('click', tareClick);
+	
+	
+	
+
+
+
+
+fitToContainer(canvas);
+
+
+
+function fitToContainer(canvas){
+  // Make it visually fill the positioned parent
+  canvas.style.width ='100%';
+  canvas.style.height='100%';
+  // ...then set the internal size to match
+  canvas.width  = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+	  angleType.addEventListener('change', changeAngleType);
+  if (isWebGLAvailable()) {
+    const webGLnotSupported = document.getElementById('webGLnotSupported');
+    webGLnotSupported.classList.add('hidden');
+  }
+  //loadAllSettings();
+});
+
   
+  
+  
+let isWebGLAvailable = function() {
+  try {
+    var canvas = document.createElement( 'canvas' );
+    return !! (window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+  } catch (e) {
+    return false;
+  }
+}
+
+async function changeAngleType() {
+  saveSetting('angletype', angleType.value);
+}
+
+function loadAllSettings() {
+  // Load all saved settings or defaults
+
+  angleType.value = loadSetting('angletype', 'quaternion');
+
+}
+
+
+function saveSetting(setting, value) {
+  window.localStorage.setItem(setting, JSON.stringify(value));
+}
+
+var bunny;
+
+const renderer = new THREE.WebGLRenderer({canvas});
+
+const camera = new THREE.PerspectiveCamera(45, canvas.width/canvas.height, 0.1, 100);
+camera.position.set(0, 0, 30);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('black');
+{
+  const skyColor = 0xB1E1FF;  // light blue
+  const groundColor = 0x666666;  // black
+  const intensity = 0.5;
+  const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
+  scene.add(light);
+}
+
+{
+  const color = 0xFFFFFF;
+  const intensity = 1;
+  const light = new THREE.DirectionalLight(color, intensity);
+  light.position.set(0, 10, 0);
+  light.target.position.set(-1,2,4);//-5, 0, 0);
+  scene.add(light);
+  scene.add(light.target);
+}
+
+//{
+  //const objLoader = new OBJLoader();
+  //objLoader.load('assets/bunny.obj', (root) => {
+   // bunny = root;
+    //scene.add(root);
+  //});
+//}
+{
+	//const scene = new THREE.Scene();
+	var cubeGeometry = new THREE.BoxGeometry(12, 12,12);
+	const material = new THREE.MeshBasicMaterial();
+	const cube = new THREE.Mesh( cubeGeometry, material );
+	bunny=cube;
+	scene.add( bunny );
+	
+}
+
+function resizeRendererToDisplaySize(renderer) {
+  const canvas = renderer.domElement;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) {
+    renderer.setSize(width, height, false);
+  }
+  return needResize;
+}
+
+function render() {
+  if (resizeRendererToDisplaySize(renderer)) {
+    const canvas = renderer.domElement;
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  }
+
+  if (bunny != undefined) {
+    if (angleType.value == "euler") {
+      bunny.rotation.x = THREE.Math.degToRad(pitch);//360 - orientation[2]);
+      bunny.rotation.y = THREE.Math.degToRad(orientation[0]);
+      bunny.rotation.z = THREE.Math.degToRad(roll);//orientation[1]);
+    } else {
+    /*  
+	var	qx = Math.sin((roll*Math.pi/180)/2) * Math.cos((pitch*Math.pi/180)/2) * Math.cos(0)-Math.cos((roll*Math.pi/180)/2) * Math.sin((pitch*Math.pi/180)/2) * Math.sin(0);
+    var qy = Math.cos((roll*Math.pi/180)/2) * Math.sin((pitch*Math.pi/180)/2) * Math.cos(0) + Math.sin((roll*Math.pi/180)/2) * Math.cos((pitch*Math.pi/180)/2) * Math.sin(0);
+    var qz = Math.cos((roll*Math.pi/180)/2) * Math.cos((pitch*Math.pi/180)/2) * Math.sin(0) - Math.sin((roll*Math.pi/180)/2) * Math.sin((pitch*Math.pi/180)/2) * Math.cos(0);
+    var qw = Math.cos((roll*Math.pi/180)/2) * Math.cos((pitch*Math.pi/180)/2) * Math.cos(0) + Math.sin((roll*Math.pi/180)/2) * Math.sin((pitch*Math.pi/180)/2) * Math.sin(0);
+	  */
+	  let rotObjectMatrix = new THREE.Matrix4();
+      let rotationQuaternion = new THREE.Quaternion(quaternion[1], quaternion[3], -1 * quaternion[2], quaternion[0]);
+      rotObjectMatrix.makeRotationFromQuaternion(rotationQuaternion);
+      bunny.quaternion.setFromRotationMatrix(rotObjectMatrix);
+    }
+  }
+
+  renderer.render(scene, camera);
+  //updateCalibration();
+  requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
+	
+
+	
