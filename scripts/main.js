@@ -17,7 +17,7 @@
 
 	const canvas = document.querySelector('#canvas');
 
-const angleType = document.getElementById('angle_type');
+
 	
 	var g = new JustGage({
 	id: "gauge",
@@ -298,7 +298,7 @@ function fitToContainer(canvas){
 
 
 document.addEventListener('DOMContentLoaded', () => {
-	  angleType.addEventListener('change', changeAngleType);
+	 
   if (isWebGLAvailable()) {
     const webGLnotSupported = document.getElementById('webGLnotSupported');
     webGLnotSupported.classList.add('hidden');
@@ -318,16 +318,9 @@ let isWebGLAvailable = function() {
   }
 }
 
-async function changeAngleType() {
-  saveSetting('angletype', angleType.value);
-}
 
-function loadAllSettings() {
-  // Load all saved settings or defaults
 
-  angleType.value = loadSetting('angletype', 'quaternion');
 
-}
 
 
 function saveSetting(setting, value) {
@@ -397,22 +390,11 @@ function render() {
   }
 
   if (bunny != undefined) {
-    if (angleType.value == "euler") {
+    
       bunny.rotation.x = THREE.Math.degToRad(pitch);//360 - orientation[2]);
       bunny.rotation.y = THREE.Math.degToRad(orientation[0]);
       bunny.rotation.z = THREE.Math.degToRad(roll);//orientation[1]);
-    } else {
-    /*  
-	var	qx = Math.sin((roll*Math.pi/180)/2) * Math.cos((pitch*Math.pi/180)/2) * Math.cos(0)-Math.cos((roll*Math.pi/180)/2) * Math.sin((pitch*Math.pi/180)/2) * Math.sin(0);
-    var qy = Math.cos((roll*Math.pi/180)/2) * Math.sin((pitch*Math.pi/180)/2) * Math.cos(0) + Math.sin((roll*Math.pi/180)/2) * Math.cos((pitch*Math.pi/180)/2) * Math.sin(0);
-    var qz = Math.cos((roll*Math.pi/180)/2) * Math.cos((pitch*Math.pi/180)/2) * Math.sin(0) - Math.sin((roll*Math.pi/180)/2) * Math.sin((pitch*Math.pi/180)/2) * Math.cos(0);
-    var qw = Math.cos((roll*Math.pi/180)/2) * Math.cos((pitch*Math.pi/180)/2) * Math.cos(0) + Math.sin((roll*Math.pi/180)/2) * Math.sin((pitch*Math.pi/180)/2) * Math.sin(0);
-	  */
-	  let rotObjectMatrix = new THREE.Matrix4();
-      let rotationQuaternion = new THREE.Quaternion(quaternion[1], quaternion[3], -1 * quaternion[2], quaternion[0]);
-      rotObjectMatrix.makeRotationFromQuaternion(rotationQuaternion);
-      bunny.quaternion.setFromRotationMatrix(rotObjectMatrix);
-    }
+   
   }
 
   renderer.render(scene, camera);
