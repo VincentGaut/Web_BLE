@@ -1,15 +1,23 @@
 	var bluetoothDevice;
 	var pressionLevelCharacteristic;
+	var tareCharacteristic;
 	var pressionCapteur_1;
 	var pressionCapteur_2;
 	var accelero_x;
 	var accelero_y;
 	var accelero_z;
+	var mag_x;
+	var mag_y;
+	var mag_z;
+	var gyro_x;
+	var gyro_y;
+	var gyro_z;
 	var datalist= new Array();
 	var datalist_2= new Array();
 	var datacsv= new Array();
 	var roll=0;
 	var pitch=0;
+	var yaw=0;
 	var flag=true;
 	let orientation = [0, 0, 0];
 	let quaternion = [1, 0, 0, 0];
@@ -93,29 +101,74 @@
 		//return server.getPrimaryServices();//'battery_service');
 		return server.getPrimaryService('00001523-1212-efde-1523-785feabcd123');
 	  })
-	  .then(service => {
+	  .then(service=> {
+		  log('Getting Characteristics...');
+		  return service.getCharacteristics();
+	  })
+	  .then(characteristics =>{
+		  let queue = Promise.resolve();
+    let decoder = new TextDecoder('utf-8');
+    characteristics.forEach(characteristic => {
+      switch (characteristic.uuid) {
+
+        case BluetoothUUID.getCharacteristic('00001524-1212-efde-1523-785feabcd123'):
+          queue = queue.then(_ => {
+			pressionLevelCharacteristic = characteristic;
+			pressionLevelCharacteristic.addEventListener('characteristicvaluechanged',
+			handlePressionLevelChanged);
+			document.querySelector('#startNotifications').disabled = false;
+			document.querySelector('#stopNotifications').disabled = true;
+          });
+          break;
+
+        case BluetoothUUID.getCharacteristic('00001525-1212-efde-1523-785feabcd123'):
+          queue = queue.then(_ => {
+			log('Writing Tare Characteristic...');
+			tareCharacteristic=characteristic;
+			tareCharacteristic.addEventListener('click',tareOnClick);
+			// Writing 1 is the signal to reset energy expended.
+			//let resetEnergyExpended = Uint8Array.of(1);
+			//return characteristic.writeValue(resetEnergyExpended);
+          });
+          break;
+        default: log('> Unknown Characteristic: ' + characteristic.uuid);
+      }
+    });
+    return queue;
+  })
+	  /*.then(service => {
 		log('Getting Characteristic...');
 		//return service.getCharacteristics();//'00001524-1212-efde-1523-785feabcd123');//'battery_level');
 		return service.getCharacteristic('00001524-1212-efde-1523-785feabcd123');
 	  })
+	  
 	  .then(characteristic => {
 		pressionLevelCharacteristic = characteristic;
 		pressionLevelCharacteristic.addEventListener('characteristicvaluechanged',
 			handlePressionLevelChanged);
 		document.querySelector('#startNotifications').disabled = false;
 		document.querySelector('#stopNotifications').disabled = true;
-	  });
+	  });*/
 	}
 
 	/* This function will be called when `readValue` resolves and
 	 * characteristic value changes since `characteristicvaluechanged` event
 	 * listener has been added. */
 	function handlePressionLevelChanged(event) {
-	  pressionCapteur_1 = event.target.value.getUint16(0);
-	  pressionCapteur_2 = event.target.value.getUint16(2);
+	  pressionCapteur_1 = event.target.value.getInt16(0);
+	  pressionCapteur_2 = event.target.value.getInt16(1);
+	  //roll = event.target.value.getFloat32(2);
+	  //pitch = event.target.value.getFloat32(3);
+	  //yaw = event.target.value.getFloat32(4);
 	  accelero_x = event.target.value.getInt16(4);
 	  accelero_y = event.target.value.getInt16(6);
 	  accelero_z = event.target.value.getInt16(8);
+	  mag_x = event.target.value.getInt16(10);
+	  mag_y = event.target.value.getInt16(12);
+	  mag_z = event.target.value.getInt16(14);
+	  //gyro_x = event.target.value.getInt16(16);
+	  //gyro_y = event.target.value.getInt16(18);
+	  //gyro_z = event.target.value.getInt16(20);
 	  //log('> Pression Capteur 1 = ' + pressionCapteur_1 + ' Pa');
 	  //log('> Pression Capteur 2 = ' + pressionCapteur_2 + ' Pa');
 	  //log('> Position x = ' + accelero_x + ' m.s-2');
@@ -124,16 +177,18 @@
 	  update(g,pressionCapteur_1);
 	  update(j,pressionCapteur_2);
 	  storedata(datalist,datalist_2,pressionCapteur_1,pressionCapteur_2);
-	  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,accelero_x,accelero_y,accelero_z);
+	  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,roll,pitch,yaw);//accelero_x,accelero_y,accelero_z);
 	  //log('> data = ' + datalist );
 		roll = Math.atan(accelero_y/Math.sqrt((accelero_x*accelero_x)+(accelero_z*accelero_z)))*180/Math.PI;//rotation X
 		pitch = Math.atan(-1*accelero_x/Math.sqrt((accelero_y*accelero_y)+(accelero_z*accelero_z)))*180/Math.PI;// rotation y
+		yaw =  Math.atan(((mag_y * Math.cos(roll)) - (mag_z * Math.sin(roll)))/((mag_x * Math.cos(pitch))+(mag_y * Math.sin(roll)*Math.sin(pitch)) + (mag_z * Math.cos(roll) * Math.sin(pitch))))*180/Math.PI;
+
 		document.documentElement.style
     .setProperty('--Rotate_x', roll);
 	document.documentElement.style
     .setProperty('--Rotate_y', pitch);
 	//log('>Roll = ' + roll );
-	//log('> Pitch = ' + pitch );
+	//log('> Pitch = ' + yaw );
 	//get property
 
 	getComputedStyle(document.documentElement)
@@ -269,13 +324,15 @@
 	var button = document.getElementById('tracer');
     button.addEventListener('click', tracegraph);
 	
-	function tareClick(){
-		log('Tare done');
+	function tareOnClick(){
 		
+		log('Tare done');
+		let tarage = Uint8Array.of(1);
+		return tareCharacteristic.writeValue(tarage);
 	}
 
 	var button = document.getElementById('tare');
-	button.addEventListener('click', tareClick);
+	//button.addEventListener('click', tareClick);
 	
 	
 	
@@ -392,7 +449,7 @@ function render() {
   if (bunny != undefined) {
     
       bunny.rotation.x = THREE.Math.degToRad(pitch);//360 - orientation[2]);
-      bunny.rotation.y = THREE.Math.degToRad(orientation[0]);
+      bunny.rotation.y = THREE.Math.degToRad(yaw);//orientation[0]);
       bunny.rotation.z = THREE.Math.degToRad(roll);//orientation[1]);
    
   }

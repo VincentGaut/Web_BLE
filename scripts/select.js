@@ -22,3 +22,9 @@ document.querySelector('#readPressionLevel').addEventListener('click', function(
       onResetButtonClick();
     }
   });
+  
+  document.querySelector('#tare').addEventListener('click', function(event) {
+    if (isWebBluetoothEnabled()) {
+      tareOnClick();
+    }
+  });
