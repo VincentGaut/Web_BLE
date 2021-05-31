@@ -22,15 +22,21 @@
 	let orientation = [0, 0, 0];
 	let quaternion = [1, 0, 0, 0];
 	let calibration = [0, 0, 0, 0];
-
+	var qx = 0;
+	var qy= 0;
+	var qz = 0;
+	var qw=0;
 	const canvas = document.querySelector('#canvas');
+	var myChar;
+	var labels;
+	var data;
 
 
 	
 	var g = new JustGage({
 	id: "gauge",
 	value: 0,
-	min: 0,
+	min: -1800,
 	max: 10000,
 	title: "Pression capteur 1"
 	});
@@ -40,7 +46,7 @@
 	var j = new JustGage({
 		id: "gauge2",
 		value: 0,
-		min: 0,
+		min: -1800,
 		max: 10000,
 		title: "Pression capteur 2"
 		});
@@ -156,19 +162,11 @@
 	 * listener has been added. */
 	function handlePressionLevelChanged(event) {
 	  pressionCapteur_1 = event.target.value.getInt16(0);
-	  pressionCapteur_2 = event.target.value.getInt16(1);
-	  //roll = event.target.value.getFloat32(2);
-	  //pitch = event.target.value.getFloat32(3);
-	  //yaw = event.target.value.getFloat32(4);
-	  accelero_x = event.target.value.getInt16(4);
-	  accelero_y = event.target.value.getInt16(6);
-	  accelero_z = event.target.value.getInt16(8);
-	  mag_x = event.target.value.getInt16(10);
-	  mag_y = event.target.value.getInt16(12);
-	  mag_z = event.target.value.getInt16(14);
-	  //gyro_x = event.target.value.getInt16(16);
-	  //gyro_y = event.target.value.getInt16(18);
-	  //gyro_z = event.target.value.getInt16(20);
+	  pressionCapteur_2 = event.target.value.getInt16(2);
+	  qx = (event.target.value.getInt16(4))/10000;
+	  qy = (event.target.value.getInt16(6))/10000;
+	  qz = (event.target.value.getInt16(8))/10000;
+	  qw = (event.target.value.getInt16(10))/10000;
 	  //log('> Pression Capteur 1 = ' + pressionCapteur_1 + ' Pa');
 	  //log('> Pression Capteur 2 = ' + pressionCapteur_2 + ' Pa');
 	  //log('> Position x = ' + accelero_x + ' m.s-2');
@@ -179,16 +177,18 @@
 	  storedata(datalist,datalist_2,pressionCapteur_1,pressionCapteur_2);
 	  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,roll,pitch,yaw);//accelero_x,accelero_y,accelero_z);
 	  //log('> data = ' + datalist );
-		roll = Math.atan(accelero_y/Math.sqrt((accelero_x*accelero_x)+(accelero_z*accelero_z)))*180/Math.PI;//rotation X
-		pitch = Math.atan(-1*accelero_x/Math.sqrt((accelero_y*accelero_y)+(accelero_z*accelero_z)))*180/Math.PI;// rotation y
-		yaw =  Math.atan(((mag_y * Math.cos(roll)) - (mag_z * Math.sin(roll)))/((mag_x * Math.cos(pitch))+(mag_y * Math.sin(roll)*Math.sin(pitch)) + (mag_z * Math.cos(roll) * Math.sin(pitch))))*180/Math.PI;
+		//roll = Math.atan(accelero_y/Math.sqrt((accelero_x*accelero_x)+(accelero_z*accelero_z)))*180/Math.PI;//rotation X
+		//pitch = Math.atan(-1*accelero_x/Math.sqrt((accelero_y*accelero_y)+(accelero_z*accelero_z)))*180/Math.PI;// rotation y
+		//yaw =  Math.atan(((mag_y * Math.cos(roll)) - (mag_z * Math.sin(roll)))/((mag_x * Math.cos(pitch))+(mag_y * Math.sin(roll)*Math.sin(pitch)) + (mag_z * Math.cos(roll) * Math.sin(pitch))))*180/Math.PI;
+	//log('>Roll = ' + qx );
+	//log('> Pitch = ' + qy );	
 
-		document.documentElement.style
-    .setProperty('--Rotate_x', roll);
 	document.documentElement.style
-    .setProperty('--Rotate_y', pitch);
-	//log('>Roll = ' + roll );
-	//log('> Pitch = ' + yaw );
+    .setProperty('--Rotate_x', qx);
+	document.documentElement.style
+    .setProperty('--Rotate_y', qy);
+	//log('>Roll = ' + qx );
+	//log('> Pitch = ' + qy );
 	//get property
 
 	getComputedStyle(document.documentElement)
@@ -267,8 +267,8 @@
 		}
 		//var chaine = str.toString();
 		//var words = chaine.split(',');
-		var labels = str;
-		var data = {
+		labels = str;
+		data = {
 			labels: labels,
 			datasets: [{
 				label: 'Capteur 1',
@@ -288,6 +288,7 @@
 			type: 'line',
 			data,
 			options: {
+				responsive: true,
 				plugins: {
 					title: {
 						display : true,
@@ -314,7 +315,7 @@
 			}
 		};
 
-		var myChart = new Chart(
+		myChart = new Chart(
 		document.getElementById('myChart'),
 		config
 		);
@@ -324,6 +325,40 @@
 	var button = document.getElementById('tracer');
     button.addEventListener('click', tracegraph);
 	
+	function AddDataC1() {
+		myChart.data.labels.push(labels);
+		myChart.data.datasets.forEach((datalist) => {
+			dataset.data.push(datalist);
+		});
+		myChart.update();
+	}
+	
+	
+	function AddDataC2() {
+		myChart.data.labels.push(labels);
+		myChart.data.datasets.forEach((datalist) => {
+			dataset.data.push(datalist_2);
+		});
+		myChart.update();
+	}
+	
+	function RemoveData() {
+		myChart.data.labels.pop();
+		myChart.data.datasets.forEach((datalist) => {
+			dataset.data.pop();
+		});
+		myChart.update();
+	}
+	/*
+	var button = document.getElementById('Add_data_C1');
+    button.addEventListener('click', AddDataC1);
+	
+	var button = document.getElementById('Add_data_C2');
+    button.addEventListener('click', AddDataC2);
+	
+	var button = document.getElementById('Remove_Data');
+    button.addEventListener('click', RemoveData);
+	*/
 	function tareOnClick(){
 		
 		log('Tare done');
@@ -337,7 +372,7 @@
 	
 	
 
-
+///////////////////////////////////////////////////Tracé 3D ///////////////////////////////////////////////
 
 
 fitToContainer(canvas);
@@ -410,16 +445,25 @@ scene.background = new THREE.Color('black');
   scene.add(light);
   scene.add(light.target);
 }
-
-//{
-  //const objLoader = new OBJLoader();
-  //objLoader.load('assets/bunny.obj', (root) => {
-   // bunny = root;
-    //scene.add(root);
-  //});
-//}
+/*
+const loader = new STLLoader()
+loader.load(
+    'forceps_12.stl',
+    function (geometry) {
+        const mesh = new THREE.Mesh(geometry, material)
+		bunny = mesh;
+        scene.add(bunny)
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+    },
+    (error) => {
+        console.log(error);
+    }
+);*/
 {
 	//const scene = new THREE.Scene();
+	
 	var cubeGeometry = new THREE.BoxGeometry(12, 12,12);
 	const material = new THREE.MeshBasicMaterial();
 	const cube = new THREE.Mesh( cubeGeometry, material );
@@ -448,10 +492,17 @@ function render() {
 
   if (bunny != undefined) {
     
+/*	
       bunny.rotation.x = THREE.Math.degToRad(pitch);//360 - orientation[2]);
       bunny.rotation.y = THREE.Math.degToRad(yaw);//orientation[0]);
       bunny.rotation.z = THREE.Math.degToRad(roll);//orientation[1]);
-   
+   */
+
+	let rotObjectMatrix = new THREE.Matrix4();
+    let rotationQuaternion = new THREE.Quaternion(qw, qx, qy,qz);//quaternion[1], quaternion[3], -1 * quaternion[2], quaternion[0]);
+    rotObjectMatrix.makeRotationFromQuaternion(rotationQuaternion);
+    bunny.quaternion.setFromRotationMatrix(rotObjectMatrix);
+	
   }
 
   renderer.render(scene, camera);
