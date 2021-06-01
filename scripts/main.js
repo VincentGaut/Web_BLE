@@ -499,7 +499,7 @@ function render() {
    */
 
 	let rotObjectMatrix = new THREE.Matrix4();
-    let rotationQuaternion = new THREE.Quaternion(qw, qx, qy,qz);//quaternion[1], quaternion[3], -1 * quaternion[2], quaternion[0]);
+    let rotationQuaternion = new THREE.Quaternion(qz, qy, qw,qx);//quaternion[1], quaternion[3], -1 * quaternion[2], quaternion[0]);
     rotObjectMatrix.makeRotationFromQuaternion(rotationQuaternion);
     bunny.quaternion.setFromRotationMatrix(rotObjectMatrix);
 	
