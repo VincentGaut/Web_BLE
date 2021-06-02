@@ -37,7 +37,7 @@
 	id: "gauge",
 	value: 0,
 	min: -1800,
-	max: 10000,
+	max: 20000,
 	title: "Pression capteur 1"
 	});
 	
@@ -47,7 +47,7 @@
 		id: "gauge2",
 		value: 0,
 		min: -1800,
-		max: 10000,
+		max: 20000,
 		title: "Pression capteur 2"
 		});
 		
