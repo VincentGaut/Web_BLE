@@ -37,7 +37,7 @@
 	id: "gauge",
 	value: 0,
 	min: -1800,
-	max: 20000,
+	max: 100000,
 	title: "Pression capteur 1"
 	});
 	
@@ -47,7 +47,7 @@
 		id: "gauge2",
 		value: 0,
 		min: -1800,
-		max: 20000,
+		max: 100000,
 		title: "Pression capteur 2"
 		});
 		
@@ -162,8 +162,8 @@
 	 * characteristic value changes since `characteristicvaluechanged` event
 	 * listener has been added. */
 	function handlePressionLevelChanged(event) {
-	  pressionCapteur_1 = event.target.value.getInt16(0);
-	  pressionCapteur_2 = event.target.value.getInt16(2);
+	  pressionCapteur_1 = event.target.value.getInt16(0)*10;
+	  pressionCapteur_2 = event.target.value.getInt16(2)*10;
 	  qx = (event.target.value.getInt16(4))/10000;
 	  qy = (event.target.value.getInt16(6))/10000;
 	  qz = (event.target.value.getInt16(8))/10000;

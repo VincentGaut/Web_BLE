@@ -333,8 +333,8 @@ void loop() {
           Serial.println((int)(qz*10000), 4); 
 
 
-          capteur_1=pression_unit-offs;
-          capteur_2=pression_unit_2-offs_2;
+          capteur_1=(pression_unit-offs)/10;
+          capteur_2=(pression_unit_2-offs_2)/1O;
 
           buff [0] = capteur_1 >> 8;
           buff [1] = capteur_1 & 0x00FF;
