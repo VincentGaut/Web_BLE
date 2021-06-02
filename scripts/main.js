@@ -265,9 +265,14 @@
 		for (let i = 0; i <= datalist.length; i++) {
 			str.push(0.1*i);
 		}
-		//var chaine = str.toString();
-		//var words = chaine.split(',');
-		labels = str;
+		
+		
+		
+		
+		log('> data = ' + datalist.length );
+	}
+	
+	labels = str;
 		data = {
 			labels: labels,
 			datasets: [{
@@ -319,9 +324,6 @@
 		document.getElementById('myChart'),
 		config
 		);
-		
-		log('> data = ' + datalist.length );
-	}
 	var button = document.getElementById('tracer');
     button.addEventListener('click', tracegraph);
 	
