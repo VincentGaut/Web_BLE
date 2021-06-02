@@ -59,12 +59,13 @@
 		fich_1.push(a);
 		fich_2.push(b);		
 	}
-	function storedata_csv(fich,a,b,c,d,e) {
+	function storedata_csv(fich,a,b,c,d,e,f) {
 		fich.push(a);
 		fich.push(b);
 		fich.push(c);
 		fich.push(d);
 		fich.push(e);
+		fich.push(f);
 		fich.push('\n');		
 	}
 
@@ -175,7 +176,7 @@
 	  update(g,pressionCapteur_1);
 	  update(j,pressionCapteur_2);
 	  storedata(datalist,datalist_2,pressionCapteur_1,pressionCapteur_2);
-	  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,roll,pitch,yaw);//accelero_x,accelero_y,accelero_z);
+	  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,qx,qy,qz,qw);//accelero_x,accelero_y,accelero_z);
 	  //log('> data = ' + datalist );
 		//roll = Math.atan(accelero_y/Math.sqrt((accelero_x*accelero_x)+(accelero_z*accelero_z)))*180/Math.PI;//rotation X
 		//pitch = Math.atan(-1*accelero_x/Math.sqrt((accelero_y*accelero_y)+(accelero_z*accelero_z)))*180/Math.PI;// rotation y
@@ -247,8 +248,8 @@
 	}
 	function exportToCsv() {
 			var tab = datacsv.toString();
-            var header = "vide,Capteur 1,Capteur 2,Accelerometre x,Accelerometre y,Accelerometre z\n";
-			var myCsv = header + tab;//"Capteur 1;Capteur 2;Accelerometre x;Accelerometre y;Accelerometre z\nval1;val2;val3;val4;val5";
+            var header = "vide,Capteur 1,Capteur 2,qx,qy,qz,qw\n";
+			var myCsv = header + tab;
 
             window.open('data:text/csv;charset=utf-8,' + escape(myCsv));
         }
@@ -268,22 +269,22 @@
 		//var chaine = str.toString();
 		//var words = chaine.split(',');
 		labels = str;
-		data = {
-			labels: labels,
-			datasets: [{
-				label: 'Capteur 1',
-				backgroundColor: 'rgb(255, 99, 132)',
-				borderColor: 'rgb(255, 99, 132)',
-				data: datalist,
-			},
-			{
-				label: 'Capteur 2 ',
-				backgroundColor: 'rgb(66, 201, 255)',
-				borderColor: 'rgb(66, 201, 255)',
-				data: datalist_2,
-			
-			}]
-		};
+				data = {
+					labels: labels,
+					datasets: [{
+						label: 'Capteur 1',
+						backgroundColor: 'rgb(255, 99, 132)',
+						borderColor: 'rgb(255, 99, 132)',
+						data: datalist,
+					},
+					{
+						label: 'Capteur 2 ',
+						backgroundColor: 'rgb(66, 201, 255)',
+						borderColor: 'rgb(66, 201, 255)',
+						data: datalist_2,
+					
+					}]
+				};
 		var config = {
 			type: 'line',
 			data,
@@ -315,13 +316,16 @@
 			}
 		};
 
-		myChart = new Chart(
-		document.getElementById('myChart'),
-		config
-		);
+	myChart = new Chart(
+	document.getElementById('myChart'),
+	config
+	);
+		
 		
 		log('> data = ' + datalist.length );
 	}
+
+		
 	var button = document.getElementById('tracer');
     button.addEventListener('click', tracegraph);
 	
@@ -369,7 +373,16 @@
 	var button = document.getElementById('tare');
 	//button.addEventListener('click', tareClick);
 	
+	function Reset_Graph() {
+		datalist.length=0;
+		datalist_2.length=0;
+		log('Reset done');
+		log('datalist: ' + datalist );
+		
+	}
 	
+	var button = document.getElementById('reset_graph');
+    button.addEventListener('click', Reset_Graph);
 	
 
 ///////////////////////////////////////////////////Tracé 3D ///////////////////////////////////////////////
