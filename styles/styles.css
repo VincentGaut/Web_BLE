@@ -78,3 +78,10 @@ html {
 #status:empty, #log:empty, #content:empty {
   display: none;
 }
+
+#myChart {
+	border : thick double #32a1ce;
+	background-color: #FFFFFF;
+	
+	
+}
