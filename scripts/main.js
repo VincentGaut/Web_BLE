@@ -95,7 +95,6 @@ function connectDeviceAndCacheCharacteristics() {
   return bluetoothDevice.gatt.connect()
   .then(server => {
 	log('Getting Service...');
-	//return server.getPrimaryServices();//'battery_service');
 	return server.getPrimaryService('00001523-1212-efde-1523-785feabcd123');
   })
   .then(service=> {
@@ -123,9 +122,6 @@ characteristics.forEach(characteristic => {
 		log('Writing Tare Characteristic...');
 		tareCharacteristic=characteristic;
 		tareCharacteristic.addEventListener('click',tareOnClick);
-		// Writing 1 is the signal to reset energy expended.
-		//let resetEnergyExpended = Uint8Array.of(1);
-		//return characteristic.writeValue(resetEnergyExpended);
 	  });
 	  break;
 	default: log('> Unknown Characteristic: ' + characteristic.uuid);
@@ -133,19 +129,6 @@ characteristics.forEach(characteristic => {
 });
 return queue;
 })
-  /*.then(service => {
-	log('Getting Characteristic...');
-	//return service.getCharacteristics();//'00001524-1212-efde-1523-785feabcd123');//'battery_level');
-	return service.getCharacteristic('00001524-1212-efde-1523-785feabcd123');
-  })
-  
-  .then(characteristic => {
-	pressionLevelCharacteristic = characteristic;
-	pressionLevelCharacteristic.addEventListener('characteristicvaluechanged',
-		handlePressionLevelChanged);
-	document.querySelector('#startNotifications').disabled = false;
-	document.querySelector('#stopNotifications').disabled = true;
-  });*/
 }
 
 /* This function will be called when `readValue` resolves and
@@ -166,32 +149,12 @@ function handlePressionLevelChanged(event) {
 	  taille =0;
   }
   else {
-	  taille = 0.1 * datalist.length;
+	  taille = Math.round((0.1 * datalist.length)*10)/10;
   }
   labels.push(taille);
   storedata(datalist,datalist_2,pressionCapteur_1,pressionCapteur_2);
-  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,qx,qy,qz,qw, taille);//accelero_x,accelero_y,accelero_z);
-  //log('> data = ' + datalist );
-	//roll = Math.atan(accelero_y/Math.sqrt((accelero_x*accelero_x)+(accelero_z*accelero_z)))*180/Math.PI;//rotation X
-	//pitch = Math.atan(-1*accelero_x/Math.sqrt((accelero_y*accelero_y)+(accelero_z*accelero_z)))*180/Math.PI;// rotation y
-	//yaw =  Math.atan(((mag_y * Math.cos(roll)) - (mag_z * Math.sin(roll)))/((mag_x * Math.cos(pitch))+(mag_y * Math.sin(roll)*Math.sin(pitch)) + (mag_z * Math.cos(roll) * Math.sin(pitch))))*180/Math.PI;
-//log('>Roll = ' + qx );
-//log('> Pitch = ' + qy );	
+  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,qx,qy,qz,qw, taille);//accelero_x,accelero_y,accelero_z);	
 
-document.documentElement.style
-.setProperty('--Rotate_x', qx);
-document.documentElement.style
-.setProperty('--Rotate_y', qy);
-//log('>Roll = ' + qx );
-//log('> Pitch = ' + qy );
-//get property
-
-getComputedStyle(document.documentElement)
-.getPropertyValue('--Rotate_x'); // returns value
-getComputedStyle(document.documentElement)
-.getPropertyValue('--Rotate_y'); // returns value
-//log('>Roll = ' + --Rotate_x );
-//log('> Pitch = ' + --Rotate_y );
 }
 
 function onStartNotificationsButtonClick() {
@@ -250,7 +213,7 @@ function exportToCsv() {
 
 var button = document.getElementById('Resultat');
 button.addEventListener('click', exportToCsv);
-//var btn = document.querySelector('.favorite styled');
+
 
 
 
@@ -260,10 +223,8 @@ function update_graph() {
 	myChart.update()
 }
 
-
-//labels = str;
 data = {
-	labels: labels,//labels,
+	labels: labels,
 	datasets: [{
 		label: 'Capteur 1',
 		backgroundColor: 'rgb(255, 99, 132)',
@@ -323,7 +284,6 @@ function AddDataC1() {
 	myChart.update();
 
 }
-	
 
 function AddDataC2() {
 	data.datasets[1].hidden = false;
@@ -391,8 +351,8 @@ function fitToContainer(canvas){
 document.addEventListener('DOMContentLoaded', () => {
 	 
   if (isWebGLAvailable()) {
-    const webGLnotSupported = document.getElementById('webGLnotSupported');
-    webGLnotSupported.classList.add('hidden');
+    //const webGLnotSupported = document.getElementById('webGLnotSupported');
+    //webGLnotSupported.classList.add('hidden');
   }
   //loadAllSettings();
 });
@@ -512,4 +472,35 @@ function render() {
 requestAnimationFrame(render);
 	
 
+	
+	
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// Button listener //////////////////////////////////////////////////////////////
+
+function OrientationVisible() {
+	
+    oriente.style.display = "none";
+	trace.style.display = "block";
+	document.querySelector('#orientation').disabled = true;
+	document.querySelector('#graphique').disabled = false;
+  
+}
+	
+function GraphVisible() {
+    trace.style.display = "none";
+	oriente.style.display = "block";
+	document.querySelector('#graphique').disabled = true;
+	document.querySelector('#orientation').disabled = false;
+
+}
+
+
+let oriente = document.getElementById("oriented_canvas")
+var button = document.getElementById('orientation');
+button.addEventListener('click', OrientationVisible);
+
+let trace = document.getElementById("graph_pressure")
+var button = document.getElementById('graphique');
+button.addEventListener('click', GraphVisible);
 	

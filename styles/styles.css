@@ -1,5 +1,5 @@
 html {
-  background-color: #C0C0C0;
+  background-color: #FFFFFF;
 }
 #boxes{
       content: "";
@@ -44,6 +44,7 @@ html {
                                       rgba(0, 0, 0, 0));
     box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
                 inset -2px -2px 3px rgba(0, 0, 0, .6);
+	
 }
 
 .styled:hover {
@@ -53,6 +54,10 @@ html {
 .styled:active {
     box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
                 inset 2px 2px 3px rgba(0, 0, 0, .6);
+}
+.styled:disabled {
+  background: #dddddd;
+  color: #000;
 }
 .output {
   background-color: #f0f0f0;
@@ -82,6 +87,12 @@ html {
 #myChart {
 	border : thick double #32a1ce;
 	background-color: #FFFFFF;
+	width : 75 %;
+	height: 300 px;
 	
+}
+#control {
+	height : 100 px;
+	margin : 0;
 	
 }
