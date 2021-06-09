@@ -31,14 +31,15 @@
 	
 	<script src="scripts\window.js"></script>
 
-
-	<h1>Web communication : MAMAN 2 Project</h1>
-	
-	<button id="readPressionLevel">Read Bluetooth Device's Pression Level</button>
-	<button id="startNotifications" disabled>Start Notifications</button>
-	<button id="stopNotifications" disabled>Stop Notifications</button>
-	<button id="reset">Reset Bluetooth Device</button>
-	
+	<div id="entete" >
+		<h1>Web communication : MAMAN 2 Project</h1>
+		<div id="entete_bouton">
+			<button id="readPressionLevel">Read Bluetooth Device's Pression Level</button>
+			<button id="startNotifications" disabled>Start Notifications</button>
+			<button id="stopNotifications" disabled>Stop Notifications</button>
+			<button id="reset">Reset Bluetooth Device</button>
+		</div>
+	</div>
 
 	<script>
 	  var ChromeSamples = {
@@ -78,14 +79,14 @@
 		}
 	  }
 	</script>
-	
-	<h3>Live Messages</h3>
-	<div id="output" 
-		class="output" > 
-	  <div id="content"></div>
-	  <div id="status"></div>
-	  <pre id="log"></pre>
-	</div>
+	<div id="contenu">
+		<h3>Live Messages</h3>
+		<div id="output" 
+			class="output" > 
+		  <div id="content"></div>
+		  <div id="status"></div>
+		  <pre id="log"></pre>
+		</div>
 
 	<script>
 	  log = ChromeSamples.log;
@@ -110,47 +111,50 @@
 		  ga('send', 'pageview');
 		  /* jshint ignore:end */
 	</script>
-		
-	<input class="favorite styled"
-			id ="Resultat"
-			type="button"
-			value="Export data">
-	
-	<button id="tare" class ="favorite styled"> Tare </button>
-	<script src="scripts\select.js"></script>
-	
-	<div id="boxes">
-		<h2> Mesures de Pressions </h2>
-		<div id="gauge" class="200x160px"></div>
-
-		<div id="gauge2" class="200x160px"></div>
-
-	</div>
-	<div id="container">
-		<div id="control">
-			<button id ="orientation" class ="favorite styled">  Graphique </button>
-			<button id="graphique" class ="favorite styled" disabled> 3 D</button>
+		<div id="donnee">
+			<input class="favorite styled"
+					id ="Resultat"
+					type="button"
+					value="Export data">
+			
+			<button id="tare" class ="favorite styled"> Tare </button>
 		</div>
-		<div id ="oriented_canvas" class="animation-container">
-			<canvas id="canvas"></canvas>			
-		</div>
+		<script src="scripts\select.js"></script>
+	
+		<div id="container_pression">
+			<h2> Mesures de Pressions </h2>
+			<div id="boxes">
+				<div id="gauge" class="200x160px"></div>
 
-		<div id ="graph_pressure" class="chart-container" style = " position : relative ; height : 80vh; width : 80 vw" hidden>
-			<canvas id="myChart"></canvas>
-		
-			<div class="button-graph" style = " position : relative">
-				<button id="update_graph" class ="favorite styled">Update graph</button>
-				<button id="Add_data_C1" class ="favorite styled"> Ajouter capteur 1 </button>
-				<button id="Add_data_C2" class ="favorite styled"> Ajouter capteur 2 </button>
-				<button id="Remove_Data" class ="favorite styled"> Remove Data </button>
-				<button id="Remove_C1" class ="favorite styled"> Remove Capteur 1 </button>
-				<button id="Remove_C2" class ="favorite styled"> Remove Capteur 2 </button>
+				<div id="gauge2" class="200x160px"></div>
 			</div>
 		</div>
+		<div id="container">
+			<div id="control">
+				<button id ="orientation" class ="favorite styled">  Graphique </button>
+				<button id="graphique" class ="favorite styled" disabled> 3 D</button>
+			</div>
+			<div id ="oriented_canvas" class="animation-container">
+				<canvas id="canvas"></canvas>			
+			</div>
 
+			<div id ="graph_pressure" class="chart-container" style = " position : relative ; height : 80vh; width : 80 vw" hidden>
+				<div id="chart">
+				<canvas id="myChart"></canvas>
+				</div>
+				<div id ="button_graph" class="button-graph" style = " position : relative">
+					<button id="update_graph" class ="favorite styled">Update graph</button>
+					<button id="Add_data_C1" class ="favorite styled"> Ajouter capteur 1 </button>
+					<button id="Add_data_C2" class ="favorite styled"> Ajouter capteur 2 </button>
+					<button id="Remove_Data" class ="favorite styled"> Remove Data </button>
+					<button id="Remove_C1" class ="favorite styled"> Remove Capteur 1 </button>
+					<button id="Remove_C2" class ="favorite styled"> Remove Capteur 2 </button>
+				</div>
+			</div>
+
+		</div>
+		<script src="scripts\main.js"></script>	
 	</div>
-	<script src="scripts\main.js"></script>	
-	
    </body>
 </html> 
 

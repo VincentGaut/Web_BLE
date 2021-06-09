@@ -481,7 +481,7 @@ requestAnimationFrame(render);
 function OrientationVisible() {
 	
     oriente.style.display = "none";
-	trace.style.display = "block";
+	trace.style.display = "flex";
 	document.querySelector('#orientation').disabled = true;
 	document.querySelector('#graphique').disabled = false;
   
