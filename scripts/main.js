@@ -59,35 +59,8 @@ function storedata_csv(fich,a,b,c,d,e,f,g) {
 	fich.push('\n');		
 }
 
-	var j = new JustGage({
-		id: "gauge2",
-		value: 0,
-		min: -1800,
-		max: 100000,
-		title: "Pression capteur 2"
-		});
-		
-	function update(j,cap) {
-		j.refresh(cap)
-	}
-		
-	function storedata(fich_1,fich_2,a,b) {
-		fich_1.push(a);
-		fich_2.push(b);		
-	}
-	function storedata_csv(fich,a,b,c,d,e,f) {
-		fich.push(a);
-		fich.push(b);
-		fich.push(c);
-		fich.push(d);
-		fich.push(e);
-		fich.push(f);
-		fich.push('\n');		
-	}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////   Bluetooth Communication     /////////////////////////////////////////////////////
-
 
 function onReadPressionLevelButtonClick() {
   return (bluetoothDevice ? Promise.resolve() : requestDevice())
@@ -142,62 +115,6 @@ characteristics.forEach(characteristic => {
 		handlePressionLevelChanged);
 		document.querySelector('#startNotifications').disabled = false;
 		document.querySelector('#stopNotifications').disabled = true;
-	  });*/
-	}
-
-	/* This function will be called when `readValue` resolves and
-	 * characteristic value changes since `characteristicvaluechanged` event
-	 * listener has been added. */
-	function handlePressionLevelChanged(event) {
-	  pressionCapteur_1 = event.target.value.getInt16(0)*10;
-	  pressionCapteur_2 = event.target.value.getInt16(2)*10;
-	  qx = (event.target.value.getInt16(4))/10000;
-	  qy = (event.target.value.getInt16(6))/10000;
-	  qz = (event.target.value.getInt16(8))/10000;
-	  qw = (event.target.value.getInt16(10))/10000;
-	  //log('> Pression Capteur 1 = ' + pressionCapteur_1 + ' Pa');
-	  //log('> Pression Capteur 2 = ' + pressionCapteur_2 + ' Pa');
-	  //log('> Position x = ' + accelero_x + ' m.s-2');
-	  //log('> Position y = ' + accelero_y + ' m.s-2');
-	  //log('> Position z = ' + accelero_z + ' m.s-2');
-	  update(g,pressionCapteur_1);
-	  update(j,pressionCapteur_2);
-	  storedata(datalist,datalist_2,pressionCapteur_1,pressionCapteur_2);
-	  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,qx,qy,qz,qw);//accelero_x,accelero_y,accelero_z);
-	  //log('> data = ' + datalist );
-		//roll = Math.atan(accelero_y/Math.sqrt((accelero_x*accelero_x)+(accelero_z*accelero_z)))*180/Math.PI;//rotation X
-		//pitch = Math.atan(-1*accelero_x/Math.sqrt((accelero_y*accelero_y)+(accelero_z*accelero_z)))*180/Math.PI;// rotation y
-		//yaw =  Math.atan(((mag_y * Math.cos(roll)) - (mag_z * Math.sin(roll)))/((mag_x * Math.cos(pitch))+(mag_y * Math.sin(roll)*Math.sin(pitch)) + (mag_z * Math.cos(roll) * Math.sin(pitch))))*180/Math.PI;
-	//log('>Roll = ' + qx );
-	//log('> Pitch = ' + qy );	
-
-	document.documentElement.style
-    .setProperty('--Rotate_x', qx);
-	document.documentElement.style
-    .setProperty('--Rotate_y', qy);
-	//log('>Roll = ' + qx );
-	//log('> Pitch = ' + qy );
-	//get property
-
-	getComputedStyle(document.documentElement)
-    .getPropertyValue('--Rotate_x'); // returns value
-	getComputedStyle(document.documentElement)
-    .getPropertyValue('--Rotate_y'); // returns value
-	//log('>Roll = ' + --Rotate_x );
-	//log('> Pitch = ' + --Rotate_y );
-	}
-
-	function onStartNotificationsButtonClick() {
-	  log('Starting Pression Level Notifications...');
-	  pressionLevelCharacteristic.startNotifications()
-	  .then(_ => {
-		log('> Notifications started');
-		document.querySelector('#startNotifications').disabled = true;
-		document.querySelector('#stopNotifications').disabled = false;
-	  })
-	  
-	  .catch(error => {
-		log('Argh! ' + error);
 	  });
 	  break;
 
@@ -294,10 +211,6 @@ function exportToCsv() {
 
 		window.open('data:text/csv;charset=utf-8,' + escape(myCsv));
 	}
-	function exportToCsv() {
-			var tab = datacsv.toString();
-            var header = "vide,Capteur 1,Capteur 2,qx,qy,qz,qw\n";
-			var myCsv = header + tab;
 
 var button = document.getElementById('Resultat');
 button.addEventListener('click', exportToCsv);
@@ -327,58 +240,6 @@ data = {
 		data: datalist_2,
 		hidden :true,
 	
-	
-	//////////////////////////////////////////////// Tracé du graph//////////////////////////////////////////////
-	var str = new Array();
-	function tracegraph() {
-		for (let i = 0; i <= datalist.length; i++) {
-			str.push(0.1*i);
-		}
-		//var chaine = str.toString();
-		//var words = chaine.split(',');
-		labels = str;
-				data = {
-					labels: labels,
-					datasets: [{
-						label: 'Capteur 1',
-						backgroundColor: 'rgb(255, 99, 132)',
-						borderColor: 'rgb(255, 99, 132)',
-						data: datalist,
-					},
-					{
-						label: 'Capteur 2 ',
-						backgroundColor: 'rgb(66, 201, 255)',
-						borderColor: 'rgb(66, 201, 255)',
-						data: datalist_2,
-					
-					}]
-				};
-		var config = {
-			type: 'line',
-			data,
-			options: {
-				responsive: true,
-				plugins: {
-					title: {
-						display : true,
-						text : "Evolution de la pression"
-					}
-				},
-				scales :{
-					x:{
-						title:{
-							color: 'red',
-							display:true,
-							text: ' Temps (s)'
-						}
-					},
-					y : {
-						title:{
-							color: 'red',
-							display:true,
-							text: ' Pression (Pa)'
-						}
-					}
 	}]
 };
 var config = {
@@ -407,72 +268,11 @@ var config = {
 					text: ' Pression (Pa)'
 				}
 			}
-		};
-
-	myChart = new Chart(
-	document.getElementById('myChart'),
-	config
-	);
-		
-		
-		log('> data = ' + datalist.length );
-	}
-
-		
-	var button = document.getElementById('tracer');
-    button.addEventListener('click', tracegraph);
-	
-	function AddDataC1() {
-		myChart.data.labels.push(labels);
-		myChart.data.datasets.forEach((datalist) => {
-			dataset.data.push(datalist);
-		});
-		myChart.update();
-	}
-	
-	
-	function AddDataC2() {
-		myChart.data.labels.push(labels);
-		myChart.data.datasets.forEach((datalist) => {
-			dataset.data.push(datalist_2);
-		});
-		myChart.update();
-	}
-	
-	function RemoveData() {
-		myChart.data.labels.pop();
-		myChart.data.datasets.forEach((datalist) => {
-			dataset.data.pop();
-		});
-		myChart.update();
-	}
-	
-	var button = document.getElementById('Add_data_C1');
-    button.addEventListener('click', AddDataC1);
-	
-	var button = document.getElementById('Add_data_C2');
-    button.addEventListener('click', AddDataC2);
-
 		}
-
 	
 	}
 };
 
-
-	var button = document.getElementById('tare');
-	//button.addEventListener('click', tareClick);
-	
-	function Reset_Graph() {
-		datalist.length=0;
-		datalist_2.length=0;
-		log('Reset done');
-		log('datalist: ' + datalist );
-		
-	}
-	
-	var button = document.getElementById('reset_graph');
-    button.addEventListener('click', Reset_Graph);
 myChart = new Chart(
 document.getElementById('myChart'),
 config
