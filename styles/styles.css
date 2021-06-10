@@ -1,33 +1,74 @@
 html {
-  background-color: #C0C0C0;
+  background-color: #FFFFFF;
+  
 }
+#entete{
+	margin: 0px;
+	border: thick double #32a1ce;
+	padding-bottom: 0px;
+	height : 0 px;
+	
+}
+#entete_bouton{
+	margin:auto;
+}
+#contenu{
+	margin: 0px;
+	margin-bottom: 50px;
+}
+#Resultat{
+	margin-right: 50%;
+}
+#tare{
+	margin-right:0%;
+}
+#donnee{
+	height : 100 px;
+	margin : auto;
+	width: 50%;
+	display:block;
+	padding-bottom:30px;
+	padding-top:30px;
+
+}
+#boxes div{
+	height:470px; 
+	width:45%;
+	padding:1% 5%;
+	clear: both;
+}
+#container_pression{
+	text-align: center;
+	margin-bottom: 20px;
+	
+}
+
 #boxes{
-      content: "";
-      display: table;
-      clear: both;
-      }
-      div{
-      float:left;
-      height:470px; 
-      width:90%;
-      padding:1% 5%;
-      }
-      #gauge{ 
-      background-color: #a1edcc;
-		width:38%; 
-		border: thick double #32a1ce;
-      } 
-      #gauge2{ 
-      background-color:#a0e9ed; 
-      width:38%; 
-	  border: thick double #32a1ce;
-      }  
-      h1{ 
-      color: #000000; 
-      text-align:center;
-		font-size: 400 px;
-		color: red;
-      }
+	content: "";
+	display: flex;
+	width: 100%;
+	
+}
+
+div{
+
+}
+#gauge{ 
+	background-color: #a1edcc;
+	width:38%; 
+	border: thick double #32a1ce;
+} 
+#gauge2{ 
+	background-color:#a0e9ed; 
+	width:38%; 
+	border: thick double #32a1ce;
+}  
+h1{ 
+	color: #000000; 
+	text-align:center;
+	font-size: 400 px;
+	color: red;
+}
 .styled {
     border: 0;
     line-height: 2.5;
@@ -44,6 +85,7 @@ html {
                                       rgba(0, 0, 0, 0));
     box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
                 inset -2px -2px 3px rgba(0, 0, 0, .6);
+	
 }
 
 .styled:hover {
@@ -53,6 +95,10 @@ html {
 .styled:active {
     box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
                 inset 2px 2px 3px rgba(0, 0, 0, .6);
+}
+.styled:disabled {
+  background: #dddddd;
+  color: #000;
 }
 .output {
   background-color: #f0f0f0;
@@ -77,4 +123,83 @@ html {
 
 #status:empty, #log:empty, #content:empty {
   display: none;
+}
+#orientation{
+	margin-right: 50%;
+	
+}
+#control {
+	height : 100 px;
+	margin : auto;
+	width: 50%;
+	display:block;
+	padding-bottom:30px;
+	padding-top:30px;
+	
+}
+
+#oriented_canvas{
+	
+	height:470px; 
+	width:90%;
+	padding:1% 5%;
+	clear: both;
+	
+}
+#chart {
+	width: 80%;
+}
+#graph_pressure {
+	width: 100%;
+}
+
+#canvas{
+	width: 75%;
+}
+#button_graph{
+	margin-left:5px;
+	text-align:right;
+	width: 20%
+}
+#update_graph{
+	right: 30 px;
+	width:100%;
+	margin-bottom: 20px;
+	
+}
+#Add_data_C1{
+	right:30px;
+	width:100%;
+	margin-bottom: 20px;
+}
+#Add_data_C2{
+	right:30px;
+	width:100%;
+	margin-bottom: 20px;
+}
+#Remove_Data{
+	right:30px;
+	width:100%;
+	margin-bottom: 20px;
+}
+#Remove_C1{
+	right:30px;
+	width:100%;
+	margin-bottom: 20px;
+}
+#Remove_C2{
+	right:30px;
+	width:100%;
+	margin-bottom: 20px;
+	
+}
+#container{
+	
+	
+}
+#myChart {
+	border : thick double #32a1ce;
+	background-color: #FFFFFF;
+
+	
 }
