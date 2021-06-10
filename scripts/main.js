@@ -36,8 +36,6 @@ var j = new JustGage({
 	id: "gauge2",
 	value: 0,
 	min: -1800,
-	max: 100000,
-	title: "Pression capteur 1"
 	max: 10000,
 	title: "Pression capteur 2"
 	});
