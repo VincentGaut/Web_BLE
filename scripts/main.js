@@ -59,7 +59,8 @@ function storedata_csv(fich,a,b,c,d,e,f,g) {
 	fich.push('\n');		
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////   Bluetooth Communication     /////////////////////////////////////////////////////
 
 function onReadPressionLevelButtonClick() {
   return (bluetoothDevice ? Promise.resolve() : requestDevice())
@@ -216,8 +217,8 @@ button.addEventListener('click', exportToCsv);
 
 
 
-
-//////////////////////////////////////////////// Tracé du graph//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////       Tracé du graph    ////////////////////////////////////////////////////////////////
 var str = new Array();
 function update_graph() {
 	myChart.update()
@@ -330,8 +331,8 @@ var button = document.getElementById('tare');
 
 
 
-
-///////////////////////////////////////////////////Tracé 3D ///////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////       Tracé 3D       //////////////////////////////////////////////////////////////
 
 
 fitToContainer(canvas);
@@ -405,9 +406,21 @@ scene.background = new THREE.Color('black');
   scene.add(light.target);
 }
 /*
+const material = new THREE.MeshPhysicalMaterial({
+    color: 0xb2ffc8,
+    envMap: envTexture,
+    metalness: .25,
+    roughness: 0.1,
+    transparent: true,
+    transmission: 1.0,
+    side: THREE.DoubleSide,
+    clearcoat: 1.0,
+    clearcoatRoughness: .25
+});
+
 const loader = new STLLoader()
 loader.load(
-    'forceps_12.stl',
+    'C:\Users\Vincent Gaultier\Documents\Web_BLE\forceps_12.stl',
     function (geometry) {
         const mesh = new THREE.Mesh(geometry, material)
 		bunny = mesh;
@@ -420,13 +433,19 @@ loader.load(
         console.log(error);
     }
 );*/
+
 {
 	//const scene = new THREE.Scene();
 	
-	var cubeGeometry = new THREE.BoxGeometry(12, 12,12);
-	const material = new THREE.MeshBasicMaterial();
+	var cubeGeometry = new THREE.BoxGeometry(12, 8,8);
+	const material = new THREE.MeshBasicMaterial({ color:0xffffff, vertexColors: THREE.FaceColors });
 	const cube = new THREE.Mesh( cubeGeometry, material );
+	cube.geometry.faces[ 5 ].color.setHex( 0x00ffff );
+	cube.geometry.faces[ 4 ].color.setHex( 0x00ffff );
+	cube.geometry.faces[ 6 ].color.setHex( 0x00ffff );
+	cube.geometry.faces[ 7 ].color.setHex( 0x00ffff );
 	bunny=cube;
+	
 	scene.add( bunny );
 	
 }
