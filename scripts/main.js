@@ -14,6 +14,9 @@ var qx = 0;
 var qy= 0;
 var qz = 0;
 var qw=0;
+var pitch = 0;
+var roll= 0;
+var heading = 0;
 const canvas = document.querySelector('#canvas');
 var myChar;
 const labels= [];
@@ -26,7 +29,7 @@ var g = new JustGage({
 id: "gauge",
 value: 0,
 min: -1800,
-max: 10000,
+max: 30000,
 title: "Pression capteur 1"
 });
 	
@@ -36,7 +39,7 @@ var j = new JustGage({
 	id: "gauge2",
 	value: 0,
 	min: -1800,
-	max: 10000,
+	max: 30000,
 	title: "Pression capteur 2"
 	});
 	
@@ -48,7 +51,7 @@ function storedata(fich_1,fich_2,a,b) {
 	fich_1.push(a);
 	fich_2.push(b);		
 }
-function storedata_csv(fich,a,b,c,d,e,f,g) {
+function storedata_csv(fich,a,b,c,d,e,f,g,h,i,j) {
 	fich.push(a);
 	fich.push(b);
 	fich.push(c);
@@ -56,6 +59,9 @@ function storedata_csv(fich,a,b,c,d,e,f,g) {
 	fich.push(e);
 	fich.push(f);
 	fich.push(g);
+	fich.push(h);
+	fich.push(i);
+	fich.push(j);
 	fich.push('\n');		
 }
 
@@ -142,6 +148,9 @@ function handlePressionLevelChanged(event) {
   qy = (event.target.value.getInt16(6))/10000;
   qz = (event.target.value.getInt16(8))/10000;
   qw = (event.target.value.getInt16(10))/10000;
+  pitch = (event.target.value.getInt16(12))/100;
+  roll = (event.target.value.getInt16(14))/100;
+  heading = (event.target.value.getInt16(16))/100;
   //log('> Pression Capteur 1 = ' + pressionCapteur_1 + ' Pa');
   //log('> Pression Capteur 2 = ' + pressionCapteur_2 + ' Pa');
   update(g,pressionCapteur_1);
@@ -154,7 +163,7 @@ function handlePressionLevelChanged(event) {
   }
   labels.push(taille);
   storedata(datalist,datalist_2,pressionCapteur_1,pressionCapteur_2);
-  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,qx,qy,qz,qw, taille);//accelero_x,accelero_y,accelero_z);	
+  storedata_csv(datacsv,pressionCapteur_1,pressionCapteur_2,qx,qy,qz,qw, taille,pitch,roll,heading);//accelero_x,accelero_y,accelero_z);	
 
 }
 
@@ -206,7 +215,7 @@ function onDisconnected() {
 }
 function exportToCsv() {
 		var tab = datacsv.toString();
-		var header = "vide,Capteur 1,Capteur 2,qx,qy,qz,qw,x\n";
+		var header = "vide,Capteur 1,Capteur 2,qx,qy,qz,qw,x,roll,pitch,heading\n";
 		var myCsv = header + tab;//"Capteur 1;Capteur 2;Accelerometre x;Accelerometre y;Accelerometre z\nval1;val2;val3;val4;val5";
 
 		window.open('data:text/csv;charset=utf-8,' + escape(myCsv));
@@ -454,7 +463,24 @@ loader.load(
 	cube.geometry.faces[ 7 ].color.setHex( 0x00ffff );
 	bunny=cube;
 	
+	var murGeometry = new THREE.BoxGeometry(2,30,8);
+	const mur_material = new THREE.MeshPhongMaterial({
+    color : 0xffffff,
+    opacity: 0.5,
+    transparent: true,
+	});
+ 
+	const mur_gauche = new THREE.Mesh(murGeometry, mur_material);
+	mur_gauche.position.set( -7, 0, 0 );
+	const mur_droite = new THREE.Mesh(murGeometry, mur_material);
+	mur_droite.position.set( 7, 0, 0 );
+	
+ 
+	//cube.position.set(x, y, z);
 	scene.add( bunny );
+	scene.add( mur_gauche );
+	scene.add( mur_droite );
+
 	
 }
 
@@ -522,6 +548,12 @@ function GraphVisible() {
 
 }
 
+function Reset_Data (){
+	datalist.splice(0, datalist.length);
+	datalist_2.splice(0, datalist_2.length);
+	datacsv.splice(0, datacsv.length);
+	
+}
 
 let oriente = document.getElementById("oriented_canvas")
 var button = document.getElementById('orientation');
@@ -530,4 +562,9 @@ button.addEventListener('click', OrientationVisible);
 let trace = document.getElementById("graph_pressure")
 var button = document.getElementById('graphique');
 button.addEventListener('click', GraphVisible);
+
+
+var button = document.getElementById('reset_data');
+button.addEventListener('click', Reset_Data);
+
 	
